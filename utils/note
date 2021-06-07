@@ -1,6 +1,0 @@
-tasks:
-- validate CityName
-    regexp: ^\p{L}+(?:[\s\-]\p{L}+)*
-- if cityName empty it should error out as GeoCityApi will default to LA
-- define struct
-- test,test,test
