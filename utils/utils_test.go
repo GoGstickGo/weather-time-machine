@@ -16,9 +16,9 @@ func TestBuildDate(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		{"good#1", args{&DateBuild{Year: "1941", Month: "03", Day: "02"}}, "1941-03-02T12:00:00", false},
-		{"good#2", args{&DateBuild{Year: "1980", Month: "12", Day: "02"}}, "1980-12-02T12:00:00", false},
-		{"good#3", args{&DateBuild{Year: "2021", Month: "09", Day: "07"}}, "2021-09-07T12:00:00", false},
+		{"good#1", args{&DateBuild{Year: "1941", Month: "03", Day: "02"}}, "1941-03-02", false},
+		{"good#2", args{&DateBuild{Year: "1980", Month: "12", Day: "02"}}, "1980-12-02", false},
+		{"good#3", args{&DateBuild{Year: "2021", Month: "09", Day: "07"}}, "2021-09-07", false},
 		{"wrongYearPast", args{&DateBuild{Year: "1920", Month: "09", Day: "07"}}, "1920", true},
 		{"wrongYearFuture", args{&DateBuild{Year: "2029", Month: "09", Day: "07"}}, "2029", true},
 		{"wrongMonth", args{&DateBuild{Year: "1958", Month: "20", Day: "07"}}, "1958-20-07", true},
