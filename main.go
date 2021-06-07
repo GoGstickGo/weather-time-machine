@@ -19,9 +19,9 @@ func main() {
 		log.Fatalf("error occured with GeoDB:%v", error)
 	}
 	d := utils.DateBuild{
-		Year:  "1978",
-		Month: "02",
-		Day:   "12",
+		Year:  defaults.TestYear,
+		Month: defaults.TestMonth,
+		Day:   defaults.TestDay,
 	}
 	d.Date, d.Error = utils.BuildDate(&d)
 	if d.Error != nil {

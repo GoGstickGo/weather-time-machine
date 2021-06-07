@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	City = "Dublin"
+	City = defaults.TestCity
 	c    = client.Responses{
 		Url:        defaults.GeoDBUrl + City + defaults.GeoDBUrlSort,
 		Method:     defaults.GET,

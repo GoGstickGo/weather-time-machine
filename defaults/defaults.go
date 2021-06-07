@@ -17,4 +17,9 @@ const (
 	RapidApiKey        = "110f37f7cemshb593a342050b246p15da04jsn37a3042ae0e4"
 
 	GET = "GET"
+
+	TestCity  = "Dublin"
+	TestYear  = "1978"
+	TestMonth = "12"
+	TestDay   = "02"
 )
