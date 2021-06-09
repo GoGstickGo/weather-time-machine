@@ -13,6 +13,7 @@ type Responses struct {
 	Method     string
 	Url        string
 	Apiaddress string
+	Apikey     string
 	Request    *http.Request
 	Response   *http.Response
 	Data       map[string]interface{}
@@ -24,12 +25,12 @@ func jsonDecoder(r io.Reader) (map[string]interface{}, error) {
 	return data, json.NewDecoder(r).Decode(&data)
 }
 
-func Client(r *Responses) (map[string]interface{}, error) {
+func (r *Responses) Client() (map[string]interface{}, error) {
 	r.Request, r.Error = http.NewRequest(r.Method, r.Url, nil)
 	if r.Error != nil {
 		return r.Data, fmt.Errorf("eror when creating http GET request, error:%v", r.Error)
 	}
-	r.Request.Header.Add(defaults.RapidApiHeaderKey, defaults.RapidApiKey)
+	r.Request.Header.Add(defaults.RapidApiHeaderKey, r.Apikey)
 	r.Request.Header.Add(defaults.RapidApiHeaderHost, r.Apiaddress)
 	// add timeout
 	var httpsClient = &http.Client{

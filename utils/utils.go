@@ -25,7 +25,7 @@ type Mapping struct {
 	TempSplit []string
 }
 
-func ConvertMap(m *Mapping) ([]string, error) {
+func (m *Mapping) ConvertMap() ([]string, error) {
 	m.Pass = make(map[string]string)
 	for k, v := range m.Recieved {
 		if k == m.MapName {
@@ -43,7 +43,7 @@ func ConvertMap(m *Mapping) ([]string, error) {
 	return m.TempField, nil
 }
 
-func GetTempH(m *Mapping) (string, error) {
+func (m *Mapping) GetTempH() (string, error) {
 
 	for _, v := range m.TempField {
 		if strings.HasPrefix(v, "temperatureHigh:") || strings.HasPrefix(v, "temperatureMax:") {
@@ -57,7 +57,7 @@ func GetTempH(m *Mapping) (string, error) {
 
 	return m.HighTemp, nil
 }
-func GetTempL(m *Mapping) (string, error) {
+func (m *Mapping) GetTempL() (string, error) {
 	for _, v := range m.TempField {
 		if strings.HasPrefix(v, "temperatureLow:") || strings.HasPrefix(v, "temperatureMin:") {
 			m.TempSplit = strings.SplitN(v, ":", 2)
@@ -71,12 +71,12 @@ func GetTempL(m *Mapping) (string, error) {
 }
 
 type DateBuild struct {
-	Year    string
-	Month   string
-	Day     string
 	Date    string
 	YearInt int
 	Error   error
+	Day     string
+	Month   string
+	Year    string
 }
 
 var (
@@ -84,7 +84,7 @@ var (
 	checkD = regexp.MustCompile(`^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$`).MatchString
 )
 
-func BuildDate(b *DateBuild) (string, error) {
+func (b *DateBuild) BuildDate() (string, error) {
 	b.YearInt, b.Error = strconv.Atoi(b.Year)
 	if b.Error != nil {
 		return "", fmt.Errorf("Error:%v", b.Error)

@@ -8,9 +8,8 @@ import (
 )
 
 var (
-	City = defaults.TestCity
-	c    = client.Responses{
-		Url:        defaults.GeoDBUrl + City + defaults.GeoDBUrlSort,
+	c = client.Responses{
+		Url:        defaults.GeoDBUrl + m.City + defaults.GeoDBUrlSort,
 		Method:     defaults.GET,
 		Apiaddress: defaults.GeoDBApi,
 	}
@@ -19,23 +18,23 @@ var (
 	}
 )
 
-func GeoDBreturns(m *GeoDB) (string, string, string, error) {
-	c.Data, c.Error = client.Client(&c)
+func (m *GeoDB) GeoDBreturns() (string, string, string, error) {
+	c.Data, c.Error = c.Client()
 	if c.Error != nil {
 		log.Fatalf("error occured with GeoDB client: %v", c.Error)
 	}
 	m.Recieved = c.Data
-	m.TempField, m.Error = convertMap(m)
+	m.TempField, m.Error = m.convertMap()
 	if m.Error != nil {
 		return "", "", "", fmt.Errorf("error occured getting values from GeoDB: %v", m.Error)
 	}
-	m.Latitude, m.Longitude, m.Error = getCityLocation(m)
+	m.Latitude, m.Longitude, m.Error = m.getCityLocation()
 	if m.Error != nil {
-		return "", "", "", fmt.Errorf("error occured when getting cordinates for the %s, error:%v", City, m.Error)
+		return "", "", "", fmt.Errorf("error occured when getting cordinates for the %s, error:%v", m.City, m.Error)
 	}
-	m.CountryCode, m.Error = getCountryCode(m)
+	m.CountryCode, m.Error = m.getCountryCode()
 	if m.Error != nil {
-		return "", "", "", fmt.Errorf("error occured when getting countryCode for the %s, error:%v", City, m.Error)
+		return "", "", "", fmt.Errorf("error occured when getting countryCode for the %s, error:%v", m.City, m.Error)
 	}
 	return m.Latitude, m.Longitude, m.CountryCode, nil
 }

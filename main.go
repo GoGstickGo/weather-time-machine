@@ -14,7 +14,7 @@ func main() {
 	g := geodb.GeoDB{
 		MapNameGeoDB: defaults.GeoDBMap,
 	}
-	Latitude, Longitude, CountryCode, error := geodb.GeoDBreturns(&g)
+	Latitude, Longitude, CountryCode, error := g.GeoDBreturns()
 	if error != nil {
 		log.Fatalf("error occured with GeoDB:%v", error)
 	}
@@ -23,7 +23,7 @@ func main() {
 		Month: defaults.TestMonth,
 		Day:   defaults.TestDay,
 	}
-	d.Date, d.Error = utils.BuildDate(&d)
+	d.Date, d.Error = d.BuildDate()
 	if d.Error != nil {
 		log.Fatalf("error occured with date: %v", d.Error)
 	}
@@ -32,7 +32,7 @@ func main() {
 		Method:     defaults.GET,
 		Apiaddress: defaults.DarkSkyApi,
 	}
-	c.Data, c.Error = client.Client(&c)
+	c.Data, c.Error = c.Client()
 	if c.Error != nil {
 		log.Fatalf("error occured when gettting http response body from the client: %v", c.Error)
 	}
@@ -40,15 +40,15 @@ func main() {
 		Recieved: c.Data,
 		MapName:  defaults.DarkSkyMap,
 	}
-	m.TempField, m.Error = utils.ConvertMap(&m)
+	m.TempField, m.Error = m.ConvertMap()
 	if m.Error != nil {
 		log.Fatalf("error occured when getting response body in DarkSkyApi:%v", m.Error)
 	}
-	m.HighTemp, m.Error = utils.GetTempH(&m)
+	m.HighTemp, m.Error = m.GetTempH()
 	if m.Error != nil {
 		log.Fatalf("error occured with HighTemp,error:%v", m.Error)
 	}
-	m.LowTemp, m.Error = utils.GetTempL(&m)
+	m.LowTemp, m.Error = m.GetTempL()
 	if m.Error != nil {
 		log.Fatalf("error occured with LowTemp,error:%v", m.Error)
 	}

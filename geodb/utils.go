@@ -16,9 +16,10 @@ type GeoDB struct {
 	CountryCode  string
 	Pass         map[string]string
 	Value        string
+	City         string
 }
 
-func convertMap(m *GeoDB) ([]string, error) {
+func (m *GeoDB) convertMap() ([]string, error) {
 	m.Pass = make(map[string]string)
 	for k, v := range m.Recieved {
 		if k == m.MapNameGeoDB {
@@ -36,7 +37,7 @@ func convertMap(m *GeoDB) ([]string, error) {
 	return m.TempField, nil
 }
 
-func getCityLocation(m *GeoDB) (string, string, error) {
+func (m *GeoDB) getCityLocation() (string, string, error) {
 	for _, v := range m.TempField {
 		switch {
 		case strings.HasPrefix(v, "latitude:"):
@@ -53,7 +54,7 @@ func getCityLocation(m *GeoDB) (string, string, error) {
 	return m.Latitude, m.Longitude, nil
 }
 
-func getCountryCode(m *GeoDB) (string, error) {
+func (m *GeoDB) getCountryCode() (string, error) {
 	for _, v := range m.TempField {
 		if strings.HasPrefix(v, "countryCode:") {
 			m.TempSplit = strings.SplitN(v, ":", 2)
