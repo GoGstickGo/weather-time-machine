@@ -25,7 +25,7 @@ func BuildDate(year, month, day string) (string, error) {
 	case !checkY(year) || yearInt > time.Now().Year():
 		return year, fmt.Errorf("invalid value for year: %s,year must between 1940-%d", year, time.Now().Year())
 	case !checkD(year + "-" + month + "-" + day):
-		return year + "-" + month + "-" + day, fmt.Errorf("date format must be: 1978-02-02,invalid value for date: %s-%s-%s", year, month, day)
+		return year + "-" + month + "-" + day, fmt.Errorf("date format must be: 1978-02-02")
 	default:
 		date = year + "-" + month + "-" + day
 	}

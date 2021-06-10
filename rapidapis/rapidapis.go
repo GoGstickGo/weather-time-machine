@@ -3,6 +3,7 @@ package rapidapis
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -51,7 +52,7 @@ type DarkSkyClient struct {
 func (c *GeoDBClient) convertMap() ([]string, error) {
 	c.mapping.pass = make(map[string]string)
 	for k, v := range c.mapping.recieved {
-		if k == defaults.GeoDBMap || k == defaults.DarkSkyMap {
+		if k == defaults.GeoDBMap {
 			c.mapping.value = fmt.Sprintf("%v", v)
 			c.mapping.pass[k] = c.mapping.value
 		}
@@ -90,7 +91,7 @@ func (c *GeoDBClient) getCountryCode() (string, error) {
 		}
 	}
 	if c.mapping.countryCode == "" {
-		return c.mapping.countryCode, fmt.Errorf("failed to get lowest temperature")
+		return c.mapping.countryCode, fmt.Errorf("failed to get countrycode")
 	}
 	return c.mapping.countryCode, nil
 }
@@ -139,19 +140,19 @@ func (c *DarkSkyClient) getTempL() (string, error) {
 
 func (p *Params) validateParams() (string, error) {
 	if p.Apikey == "" {
-		return p.Apikey, fmt.Errorf("empty apikey error: %v", p.Apikey)
+		return p.Apikey, fmt.Errorf("you must define valid RapidApi key")
 	}
 	date, err := utils.BuildDate(p.Year, p.Month, p.Day)
 	if err != nil {
-		return date, fmt.Errorf("invalid date form %s,error: %v", date, err)
+		return date, fmt.Errorf("invalid date form %s,%v", date, err)
 	}
 	return date, nil
 }
 
 func geoDBClient(p Params) (*GeoDBClient, error) {
-	_, err := p.validateParams()
+	_, err := (&p).validateParams()
 	if err != nil {
-		return &GeoDBClient{}, fmt.Errorf("invalid parameters")
+		log.Fatalf("❌Parameter valadtion failed: %v", err)
 	}
 
 	url := defaults.GeoDBUrl + p.City + defaults.GeoDBUrlSort
@@ -182,29 +183,32 @@ func geoDBClient(p Params) (*GeoDBClient, error) {
 }
 
 func GeoDBreturns(p Params) (string, string, string, error) {
-	c, _ := geoDBClient(p)
+	c, err := geoDBClient(p)
+	if err != nil {
+		log.Fatalf("❌Error occured establishing client for GeoDB %v", err)
+	}
 	c.mapping.recieved = c.data
 	c.mapping.tempField, c.mapping.err = c.convertMap()
 	if c.mapping.err != nil {
-		return "", "", "", fmt.Errorf("error occured getting values from GeoDB: %v", c.mapping.err)
+		return "", "", "", fmt.Errorf("convert maps: %v", c.mapping.err)
 	}
 	c.mapping.latitude, c.mapping.longitude, c.mapping.err = c.getCityLocation()
 	if c.mapping.err != nil {
-		return "", "", "", fmt.Errorf("error occured when getting cordinates for the %s, error:%v", c.params.City, c.mapping.err)
+		return "", "", "", fmt.Errorf("when getting cordinates for the %s, error:%v", c.params.City, c.mapping.err)
 	}
 	c.mapping.countryCode, c.mapping.err = c.getCountryCode()
 	if c.mapping.err != nil {
-		return "", "", "", fmt.Errorf("error occured when getting countryCode for the %s, error:%v", c.params.City, c.mapping.err)
+		return "", "", "", fmt.Errorf("when getting countryCode for the %s, error:%v", c.params.City, c.mapping.err)
 	}
 	return c.mapping.countryCode, c.mapping.latitude, c.mapping.longitude, nil
 }
 
 func DarkSkyC(p Params) (*DarkSkyClient, error) {
-	countryCode, latitude, longitude, _ := GeoDBreturns(p)
-	date, err := (&p).validateParams()
+	countryCode, latitude, longitude, err := GeoDBreturns(p)
 	if err != nil {
-		return &DarkSkyClient{}, fmt.Errorf("parameters validation failed with %v", err)
+		log.Fatalf("❌ Failed to get values from GeoDB Api %v", err)
 	}
+	date, _ := (&p).validateParams()
 
 	url := utils.BuildBaseURL(latitude, longitude, date)
 	request, err := http.NewRequest(defaults.GET, url, nil)
@@ -235,7 +239,10 @@ func DarkSkyC(p Params) (*DarkSkyClient, error) {
 }
 
 func DarkSkyreturns(p Params) error {
-	c, _ := DarkSkyC(p)
+	c, err := DarkSkyC(p)
+	if err != nil {
+		log.Fatalf("❌ Error occured establishing client for DarkSky Api %v", err)
+	}
 	c.mapping.recieved = c.data
 	c.mapping.tempField, c.mapping.err = c.convertMap()
 	if c.mapping.err != nil {
