@@ -1,101 +1,43 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
+	"weather-api/defaults"
 )
-
-func BaseUrl(apiurl, latitude, longitude, date, sort string) string {
-	baseurl := apiurl + latitude + "," + longitude + "," + date + "T" + "12:00:00" + sort
-	return baseurl
-}
-
-type Mapping struct {
-	Recieved  map[string]interface{}
-	Pass      map[string]string
-	MapName   string
-	Value     string
-	Error     error
-	HighTemp  string
-	LowTemp   string
-	TempField []string
-	TempSplit []string
-}
-
-func ConvertMap(m *Mapping) ([]string, error) {
-	m.Pass = make(map[string]string)
-	for k, v := range m.Recieved {
-		if k == m.MapName {
-			m.Value = fmt.Sprintf("%v", v)
-			m.Pass[k] = m.Value
-		}
-	}
-	for _, v := range m.Pass {
-		m.TempField = strings.Fields(v)
-	}
-	if m.TempField == nil {
-		return m.TempField, fmt.Errorf("failed to convert the map to slice")
-	}
-	//fmt.Println(m.TempField)
-	return m.TempField, nil
-}
-
-func GetTempH(m *Mapping) (string, error) {
-
-	for _, v := range m.TempField {
-		if strings.HasPrefix(v, "temperatureHigh:") || strings.HasPrefix(v, "temperatureMax:") {
-			m.TempSplit = strings.SplitN(v, ":", 2)
-			m.HighTemp = m.TempSplit[1]
-		}
-	}
-	if m.HighTemp == "" {
-		return m.HighTemp, fmt.Errorf("failed to get highest temperature")
-	}
-
-	return m.HighTemp, nil
-}
-func GetTempL(m *Mapping) (string, error) {
-	for _, v := range m.TempField {
-		if strings.HasPrefix(v, "temperatureLow:") || strings.HasPrefix(v, "temperatureMin:") {
-			m.TempSplit = strings.SplitN(v, ":", 2)
-			m.LowTemp = m.TempSplit[1]
-		}
-	}
-	if m.LowTemp == "" {
-		return m.LowTemp, fmt.Errorf("failed to get lowest temperature")
-	}
-	return m.LowTemp, nil
-}
-
-type DateBuild struct {
-	Year    string
-	Month   string
-	Day     string
-	Date    string
-	YearInt int
-	Error   error
-}
 
 var (
 	checkY = regexp.MustCompile(`\b(19[4-9][0-9]|20[0-4][0-9]|2050)\b`).MatchString
 	checkD = regexp.MustCompile(`^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$`).MatchString
 )
 
-func BuildDate(b *DateBuild) (string, error) {
-	b.YearInt, b.Error = strconv.Atoi(b.Year)
-	if b.Error != nil {
-		return "", fmt.Errorf("Error:%v", b.Error)
+func BuildDate(year, month, day string) (string, error) {
+	var date string
+	yearInt, err := strconv.Atoi(year)
+	if err != nil {
+		return "", fmt.Errorf("Error:%v", err)
 	}
 	switch {
-	case !checkY(b.Year) || b.YearInt > time.Now().Year():
-		return b.Year, fmt.Errorf("invalid value for year: %s,year must between 1940-%d", b.Year, time.Now().Year())
-	case !checkD(b.Year + "-" + b.Month + "-" + b.Day):
-		return b.Year + "-" + b.Month + "-" + b.Day, fmt.Errorf("date format must be: 1978-02-02,invalid value for date: %s-%s-%s, error: %v", b.Year, b.Month, b.Day, b.Error)
+	case !checkY(year) || yearInt > time.Now().Year():
+		return year, fmt.Errorf("invalid value for year: %s,year must between 1940-%d", year, time.Now().Year())
+	case !checkD(year + "-" + month + "-" + day):
+		return year + "-" + month + "-" + day, fmt.Errorf("date format must be: 1978-02-02")
 	default:
-		b.Date = b.Year + "-" + b.Month + "-" + b.Day
+		date = year + "-" + month + "-" + day
 	}
-	return b.Date, nil
+	return date, nil
+}
+
+func BuildBaseURL(latitude, longitude, date string) string {
+	baseurl := defaults.DarkSkyApiUrl + latitude + "," + longitude + "," + date + "T" + "12:00:00" + defaults.DarkSkyApiSort
+	return baseurl
+
+}
+func JsonDecoder(r io.Reader) (map[string]interface{}, error) {
+	data := make(map[string]interface{})
+	return data, json.NewDecoder(r).Decode(&data)
 }
