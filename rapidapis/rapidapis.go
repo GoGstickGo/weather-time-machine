@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 	"weather-api/defaults"
@@ -16,7 +17,7 @@ type Params struct {
 	Month  string
 	Year   string
 	Apikey string
-	City   string
+	City   []string
 	Writer io.Writer
 }
 
@@ -47,6 +48,25 @@ type DarkSkyClient struct {
 	err         error
 	mapping     Mapping
 	countryCode string
+}
+
+func (c *GeoDBClient) validateCity() error {
+	c.mapping.pass = make(map[string]string)
+	for k, v := range c.mapping.recieved {
+		if k == "metadata" {
+			c.mapping.value = fmt.Sprintf("%v", v)
+			c.mapping.pass[k] = c.mapping.value
+		}
+		for _, v := range c.mapping.pass {
+			c.mapping.tempField = strings.Fields(v)
+		}
+		for _, j := range c.mapping.tempField {
+			if strings.Contains(j, "totalCount:0") {
+				return fmt.Errorf("please choose an existing city")
+			}
+		}
+	}
+	return nil
 }
 
 func (c *GeoDBClient) convertMap() ([]string, error) {
@@ -108,7 +128,7 @@ func (c *DarkSkyClient) convertMap() ([]string, error) {
 		c.mapping.tempField = strings.Fields(v)
 	}
 	if c.mapping.tempField == nil {
-		return c.mapping.tempField, fmt.Errorf("failed to convert the map to slice")
+		return c.mapping.tempField, fmt.Errorf("unfortunately there is no historic weather data")
 	}
 	return c.mapping.tempField, nil
 }
@@ -139,9 +159,17 @@ func (c *DarkSkyClient) getTempL() (string, error) {
 }
 
 func (p *Params) validateParams() (string, error) {
-	if p.Apikey == "" {
-		return p.Apikey, fmt.Errorf("you must define valid RapidApi key")
+	params := reflect.ValueOf(p).Elem()
+	err := utils.ValidateArgs(params)
+	if err != nil {
+		return "", fmt.Errorf("%v", err)
 	}
+
+	err = utils.ValidateParams(p.Apikey, p.City)
+	if err != nil {
+		return "", fmt.Errorf("%v", err)
+	}
+
 	date, err := utils.BuildDate(p.Year, p.Month, p.Day)
 	if err != nil {
 		return date, fmt.Errorf("invalid date form %s,%v", date, err)
@@ -152,10 +180,10 @@ func (p *Params) validateParams() (string, error) {
 func geoDBClient(p Params) (*GeoDBClient, error) {
 	_, err := (&p).validateParams()
 	if err != nil {
-		log.Fatalf("❌Parameter valadtion failed: %v", err)
+		log.Fatalf("❌ Parameter validation failed: %v", err)
 	}
 
-	url := defaults.GeoDBUrl + p.City + defaults.GeoDBUrlSort
+	url := utils.GeoDBBuildBaseURL(p.City)
 	request, err := http.NewRequest(defaults.GET, url, nil)
 	if err != nil {
 		return &GeoDBClient{}, fmt.Errorf("eror when creating http GET request, error:%v", err)
@@ -175,6 +203,10 @@ func geoDBClient(p Params) (*GeoDBClient, error) {
 	if err != nil {
 		return &GeoDBClient{}, fmt.Errorf("error when decoding http.Request.Body to json")
 	}
+	err = utils.ValidateRapidApiKey(data)
+	if err != nil {
+		log.Fatalf("❌ RapidApi error: %v", err)
+	}
 	return &GeoDBClient{
 		data:   data,
 		err:    err,
@@ -188,13 +220,17 @@ func GeoDBreturns(p Params) (string, string, string, error) {
 		log.Fatalf("❌Error occured establishing client for GeoDB %v", err)
 	}
 	c.mapping.recieved = c.data
+	err = c.validateCity()
+	if err != nil {
+		log.Fatalf("❌ GeoDB cities API error: %v", err)
+	}
 	c.mapping.tempField, c.mapping.err = c.convertMap()
 	if c.mapping.err != nil {
 		return "", "", "", fmt.Errorf("convert maps: %v", c.mapping.err)
 	}
 	c.mapping.latitude, c.mapping.longitude, c.mapping.err = c.getCityLocation()
 	if c.mapping.err != nil {
-		return "", "", "", fmt.Errorf("when getting cordinates for the %s, error:%v", c.params.City, c.mapping.err)
+		return "", "", "", fmt.Errorf("when getting cordinates for the %s", c.params.City)
 	}
 	c.mapping.countryCode, c.mapping.err = c.getCountryCode()
 	if c.mapping.err != nil {
@@ -210,14 +246,14 @@ func DarkSkyC(p Params) (*DarkSkyClient, error) {
 	}
 	date, _ := (&p).validateParams()
 
-	url := utils.BuildBaseURL(latitude, longitude, date)
+	url := utils.DarkSkyBuildBaseURL(latitude, longitude, date)
 	request, err := http.NewRequest(defaults.GET, url, nil)
 	if err != nil {
 		return &DarkSkyClient{}, fmt.Errorf("eror when creating http GET request, error:%v", err)
 	}
 	request.Header.Add(defaults.RapidApiHeaderKey, p.Apikey)
 	request.Header.Add(defaults.RapidApiHeaderHost, defaults.DarkSkyApi)
-	// add timeout
+
 	var httpsClient = &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -246,7 +282,7 @@ func DarkSkyreturns(p Params) error {
 	c.mapping.recieved = c.data
 	c.mapping.tempField, c.mapping.err = c.convertMap()
 	if c.mapping.err != nil {
-		return fmt.Errorf("error occured when getting response body in DarkSkyApi:%v", c.mapping.tempField)
+		log.Fatalf("❌ DarkSkyApi error: %v, please choose later date than %s", c.mapping.err, c.date)
 	}
 	c.mapping.highTemp, c.mapping.err = c.getTempH()
 	if c.mapping.err != nil {
@@ -256,7 +292,8 @@ func DarkSkyreturns(p Params) error {
 	if c.mapping.err != nil {
 		return fmt.Errorf("error occured with LowTemp,error:%v", c.mapping.err)
 	}
-	fmt.Printf("Highest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.highTemp, c.date, p.City, c.countryCode)
-	fmt.Printf("Lowest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.lowTemp, c.date, p.City, c.countryCode)
+	cit := strings.Join(p.City, " ")
+	fmt.Printf("Highest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.highTemp, c.date, cit, c.countryCode)
+	fmt.Printf("Lowest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.lowTemp, c.date, cit, c.countryCode)
 	return nil
 }
