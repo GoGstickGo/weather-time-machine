@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	if err := cmd.NewDefaultWTSCommand().Execute(); err != nil {
+	if err := cmd.NewDefaultWTMCommand().Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
