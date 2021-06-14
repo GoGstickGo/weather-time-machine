@@ -30,11 +30,15 @@ func newCmdDailyRun() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVarP(&params.Year, "year", "y", "", "Add year between: 1940-"+fmt.Sprint(time.Now().Year()))
+	cmd.MarkFlagRequired("year")
 	cmd.Flags().StringVarP(&params.Month, "month", "m", "", "Please choose valid month between: 01 - 12")
+	cmd.MarkFlagRequired("month")
 	cmd.Flags().StringVarP(&params.Day, "day", "d", "", "Please choose valid day between: 01 - 31")
+	cmd.MarkFlagRequired("day")
 	cmd.Flags().StringVar(&params.Apikey, "apikey", "", "Please add valid Rapidapi key")
+	cmd.MarkFlagRequired("apikey")
 	cmd.Flags().StringArrayVarP(&params.City, "city", "c", s, "City with more than one name it must be in quotations")
-
+	cmd.MarkFlagRequired("city")
 	return cmd
 }
 

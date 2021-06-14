@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"reflect"
 	"strings"
 	"time"
 	"weather-api/defaults"
@@ -159,13 +158,7 @@ func (c *DarkSkyClient) getTempL() (string, error) {
 }
 
 func (p *Params) validateParams() (string, error) {
-	params := reflect.ValueOf(p).Elem()
-	err := utils.ValidateArgs(params)
-	if err != nil {
-		return "", fmt.Errorf("%v", err)
-	}
-
-	err = utils.ValidateParams(p.Apikey, p.City)
+	err := utils.ValidateParams(p.Apikey, p.City)
 	if err != nil {
 		return "", fmt.Errorf("%v", err)
 	}

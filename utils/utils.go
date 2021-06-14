@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -25,17 +24,6 @@ func ValidateRapidApiKey(data map[string]interface{}) error {
 			if strings.Contains(value, "You are not subscribed to this API") {
 				return fmt.Errorf("you are not subscribed to this API")
 			}
-		}
-	}
-	return nil
-}
-
-func ValidateArgs(p reflect.Value) error {
-	typeOfS := p.Type()
-	for i := 0; i < p.NumField(); i++ {
-		v := fmt.Sprint(p.Field(i).Interface())
-		if v == "" {
-			return fmt.Errorf("please define all parameters, missing parameter : %v", typeOfS.Field(i).Name)
 		}
 	}
 	return nil
