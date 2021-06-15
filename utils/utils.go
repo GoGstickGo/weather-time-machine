@@ -14,7 +14,7 @@ import (
 var (
 	checkY = regexp.MustCompile(`\b(19[4-9][0-9]|20[0-4][0-9]|2050)\b`).MatchString
 	checkD = regexp.MustCompile(`^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$`).MatchString
-	checkC = regexp.MustCompile(`^\p{Lu}\p{L}*(?:[\s-]\p{Lu}\p{L}*)*$`).MatchString
+	checkC = regexp.MustCompile(`^\p{Lu}.*\D$`).MatchString
 )
 
 func ValidateRapidApiKey(data map[string]interface{}) error {
@@ -29,13 +29,16 @@ func ValidateRapidApiKey(data map[string]interface{}) error {
 	return nil
 }
 
-func ValidateParams(apikey string, city []string) error {
+func ValidateParamsCity(city string) error {
+	if !checkC(city) {
+		return fmt.Errorf("invalid char in city parameter")
+	}
+	return nil
+}
+
+func ValidateParamsApikey(apikey string) error {
 	if len(apikey) != 50 {
 		return fmt.Errorf("please use valid API key as parameter")
-	}
-	cit := strings.Join(city, " ")
-	if !checkC(cit) {
-		return fmt.Errorf("invalid char in city parameter")
 	}
 	return nil
 }
@@ -62,10 +65,8 @@ func DarkSkyBuildBaseURL(latitude, longitude, date string) string {
 	return baseurl
 }
 
-func GeoDBBuildBaseURL(city []string) string {
-	var cit string
-	cit = strings.Join(city, "")
-	cit = strings.Replace(cit, " ", "%20", -1)
+func GeoDBBuildBaseURL(city string) string {
+	cit := strings.Replace(city, " ", "%20", -1)
 	baseurl := defaults.GeoDBUrl + cit + defaults.GeoDBUrlSort
 	return baseurl
 }

@@ -13,7 +13,6 @@ import (
 func newCmdDailyRun() *cobra.Command {
 	var (
 		params = rapidapis.Params{Writer: os.Stdout}
-		s      = []string{}
 	)
 	cmd := &cobra.Command{
 		Use:   "daily",
@@ -37,7 +36,7 @@ func newCmdDailyRun() *cobra.Command {
 	cmd.MarkFlagRequired("day")
 	cmd.Flags().StringVar(&params.Apikey, "apikey", "", "Please add valid Rapidapi key")
 	cmd.MarkFlagRequired("apikey")
-	cmd.Flags().StringArrayVarP(&params.City, "city", "c", s, "City with more than one name it must be in quotations")
+	cmd.Flags().StringVarP(&params.City, "city", "c", "", "City with more than one name it must be in quotations")
 	cmd.MarkFlagRequired("city")
 	return cmd
 }

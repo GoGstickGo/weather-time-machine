@@ -16,7 +16,7 @@ type Params struct {
 	Month  string
 	Year   string
 	Apikey string
-	City   []string
+	City   string
 	Writer io.Writer
 }
 
@@ -158,7 +158,12 @@ func (c *DarkSkyClient) getTempL() (string, error) {
 }
 
 func (p *Params) validateParams() (string, error) {
-	err := utils.ValidateParams(p.Apikey, p.City)
+	err := utils.ValidateParamsCity(p.City)
+	if err != nil {
+		return "", fmt.Errorf("%v", err)
+	}
+
+	err = utils.ValidateParamsApikey(p.Apikey)
 	if err != nil {
 		return "", fmt.Errorf("%v", err)
 	}
@@ -210,7 +215,7 @@ func geoDBClient(p Params) (*GeoDBClient, error) {
 func GeoDBreturns(p Params) (string, string, string, error) {
 	c, err := geoDBClient(p)
 	if err != nil {
-		log.Fatalf("❌Error occured establishing client for GeoDB %v", err)
+		log.Fatalf("❌ Error occured establishing client for GeoDB %v", err)
 	}
 	c.mapping.recieved = c.data
 	err = c.validateCity()
@@ -285,8 +290,7 @@ func DarkSkyreturns(p Params) error {
 	if c.mapping.err != nil {
 		return fmt.Errorf("error occured with LowTemp,error:%v", c.mapping.err)
 	}
-	cit := strings.Join(p.City, " ")
-	fmt.Printf("Highest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.highTemp, c.date, cit, c.countryCode)
-	fmt.Printf("Lowest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.lowTemp, c.date, cit, c.countryCode)
+	fmt.Printf("Highest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.highTemp, c.date, p.City, c.countryCode)
+	fmt.Printf("Lowest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.lowTemp, c.date, p.City, c.countryCode)
 	return nil
 }
