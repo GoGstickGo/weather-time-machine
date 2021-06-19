@@ -21,5 +21,8 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-    - name: Test
-      run: go test -v ./...
+    - name: Unit Test
+      run: go test -v -cover -race  ./...
+
+    - name: Integration Test
+      run: cd rapidapis && go test -v -race -run Test_geoDBClient -Apikey=${{ secrets.RAPIDAPIKEY }}

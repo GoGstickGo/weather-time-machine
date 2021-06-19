@@ -170,7 +170,7 @@ func (p *Params) validateParams() (string, error) {
 
 	date, err := utils.BuildDate(p.Year, p.Month, p.Day)
 	if err != nil {
-		return date, fmt.Errorf("invalid date form %s,%v", date, err)
+		return "", fmt.Errorf("invalid date form %s,%v", date, err)
 	}
 	return date, nil
 }
@@ -184,7 +184,7 @@ func geoDBClient(p Params) (*GeoDBClient, error) {
 	url := utils.GeoDBBuildBaseURL(p.City)
 	request, err := http.NewRequest(defaults.GET, url, nil)
 	if err != nil {
-		return &GeoDBClient{}, fmt.Errorf("eror when creating http GET request, error:%v", err)
+		return nil, fmt.Errorf("eror when creating http GET request, error:%v", err)
 	}
 	request.Header.Add(defaults.RapidApiHeaderKey, p.Apikey)
 	request.Header.Add(defaults.RapidApiHeaderHost, defaults.GeoDBApi)
@@ -194,12 +194,12 @@ func geoDBClient(p Params) (*GeoDBClient, error) {
 	}
 	response, err := httpsClient.Do(request)
 	if err != nil {
-		return &GeoDBClient{}, fmt.Errorf("error when getting http GET response, error:%v", err)
+		return nil, fmt.Errorf("error when getting http GET response, error:%v", err)
 	}
 	defer response.Body.Close()
 	data, err := utils.JsonDecoder(response.Body)
 	if err != nil {
-		return &GeoDBClient{}, fmt.Errorf("error when decoding http.Request.Body to json")
+		return nil, fmt.Errorf("error when decoding http.Request.Body to json")
 	}
 	err = utils.ValidateRapidApiKey(data)
 	if err != nil {
@@ -247,7 +247,7 @@ func DarkSkyC(p Params) (*DarkSkyClient, error) {
 	url := utils.DarkSkyBuildBaseURL(latitude, longitude, date)
 	request, err := http.NewRequest(defaults.GET, url, nil)
 	if err != nil {
-		return &DarkSkyClient{}, fmt.Errorf("eror when creating http GET request, error:%v", err)
+		return nil, fmt.Errorf("eror when creating http GET request, error:%v", err)
 	}
 	request.Header.Add(defaults.RapidApiHeaderKey, p.Apikey)
 	request.Header.Add(defaults.RapidApiHeaderHost, defaults.DarkSkyApi)
@@ -257,12 +257,12 @@ func DarkSkyC(p Params) (*DarkSkyClient, error) {
 	}
 	response, err := httpsClient.Do(request)
 	if err != nil {
-		return &DarkSkyClient{}, fmt.Errorf("error when getting http GET response, error:%v", err)
+		return nil, fmt.Errorf("error when getting http GET response, error:%v", err)
 	}
 	defer response.Body.Close()
 	data, err := utils.JsonDecoder(response.Body)
 	if err != nil {
-		return &DarkSkyClient{}, fmt.Errorf("error when decoding http.Request.Body to json")
+		return nil, fmt.Errorf("error when decoding http.Request.Body to json")
 	}
 	return &DarkSkyClient{
 		data:        data,
