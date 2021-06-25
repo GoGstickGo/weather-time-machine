@@ -318,8 +318,8 @@ func Test_geoDBClient(t *testing.T) {
 				"country":     "Ireland",
 				"countryCode": "IE",
 				"id":          3.453097e+06,
-				"latitude":    53.3425,
-				"longitude":   -6.265833333,
+				"latitude":    53.349722222,
+				"longitude":   -6.260277777,
 				"name":        "Dublin",
 				"population":  1.173179e+06,
 				"region":      "Leinster",
@@ -344,7 +344,7 @@ func Test_geoDBClient(t *testing.T) {
 		},
 		"metadata": map[string]interface{}{
 			"currentOffset": 0.0,
-			"totalCount":    20.0,
+			"totalCount":    27.0,
 		},
 	}
 
