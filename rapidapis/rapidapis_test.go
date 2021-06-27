@@ -355,7 +355,7 @@ func Test_geoDBClient(t *testing.T) {
 		want    *GeoDBClient
 		wantErr bool
 	}{
-		{"good", args{p: Params{"23", "03", "1988", apiKey, "Dublin", nil}}, &GeoDBClient{data: data, params: Params{"23", "03", "1988", apiKey, "Dublin", nil}}, false},
+		{"good", args{p: Params{"23", "03", "1988", apiKey, "Dublin", "", "", nil}}, &GeoDBClient{data: data, params: Params{"23", "03", "1988", apiKey, "Dublin", "", "", nil}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

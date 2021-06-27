@@ -41,6 +41,39 @@ func newCmdDailyRun() *cobra.Command {
 	return cmd
 }
 
+func newCmdCoordinatesRun() *cobra.Command {
+	var (
+		params = rapidapis.Params{Writer: os.Stdout}
+	)
+	cmd := &cobra.Command{
+		Use:   "coordinates",
+		Short: "coordinates",
+		Long:  `Get daily lowest/highest temperature for specific date & coordinates`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			err := rapidapis.DarkSkyreturns2(params)
+			if err != nil {
+				log.Fatalf("❌ Couldn't initliaze command line: %v", err)
+			}
+
+			cmd.SilenceUsage = true
+			return nil
+		},
+	}
+	cmd.Flags().StringVarP(&params.Year, "year", "y", "", "Add year between: 1940-"+fmt.Sprint(time.Now().Year()))
+	cmd.MarkFlagRequired("year")
+	cmd.Flags().StringVarP(&params.Month, "month", "m", "", "Please choose valid month between: 01 - 12")
+	cmd.MarkFlagRequired("month")
+	cmd.Flags().StringVarP(&params.Day, "day", "d", "", "Please choose valid day between: 01 - 31")
+	cmd.MarkFlagRequired("day")
+	cmd.Flags().StringVar(&params.Apikey, "apikey", "", "Please add valid Rapidapi key")
+	cmd.MarkFlagRequired("apikey")
+	cmd.Flags().StringVarP(&params.Latitude, "latitude", "lat", "", "Latitude coordnites for city")
+	cmd.MarkFlagRequired("latitude")
+	cmd.Flags().StringVarP(&params.Latitude, "longitude", "lon", "", "Longitude coordnites for city")
+	cmd.MarkFlagRequired("longitude")
+	return cmd
+}
+
 func NewDefaultWTMCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Run: func(cmd *cobra.Command, args []string) {
@@ -64,6 +97,7 @@ func NewDefaultWTMCommand() *cobra.Command {
 	}
 	cmd.AddCommand(
 		newCmdDailyRun(),
+		newCmdCoordinatesRun(),
 	)
 	cmd.SetOut(os.Stdout)
 	cmd.SetErr(os.Stderr)

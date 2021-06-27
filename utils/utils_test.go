@@ -135,3 +135,24 @@ func TestGeoDBBuildBaseURL(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateCoordinates(t *testing.T) {
+	type args struct {
+		latitude  string
+		longitude string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+	{"good",args{latitude: }}
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := ValidateCoordinates(tt.args.latitude, tt.args.longitude); (err != nil) != tt.wantErr {
+				t.Errorf("ValidateCoordinates() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
