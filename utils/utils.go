@@ -12,9 +12,10 @@ import (
 )
 
 var (
-	checkY = regexp.MustCompile(`\b(19[4-9][0-9]|20[0-4][0-9]|2050)\b`).MatchString
-	checkD = regexp.MustCompile(`^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$`).MatchString
-	checkC = regexp.MustCompile(`^\p{Lu}.*\D$`).MatchString
+	checkY     = regexp.MustCompile(`\b(19[4-9][0-9]|20[0-4][0-9]|2050)\b`).MatchString
+	checkD     = regexp.MustCompile(`^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$`).MatchString
+	checkC     = regexp.MustCompile(`^\p{Lu}.*\D$`).MatchString
+	checkCoord = regexp.MustCompile(`^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$`).MatchString
 )
 
 func ValidateRapidApiKey(data map[string]interface{}) error {
@@ -39,6 +40,13 @@ func ValidateParamsCity(city string) error {
 func ValidateParamsApikey(apikey string) error {
 	if len(apikey) != 50 {
 		return fmt.Errorf("please use valid API key as parameter")
+	}
+	return nil
+}
+
+func ValidateCoordinates(latitude, longitude string) error {
+	if !checkCoord(latitude) || !checkCoord(longitude) {
+		return fmt.Errorf("invalid coordinates")
 	}
 	return nil
 }
