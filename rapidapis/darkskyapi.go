@@ -3,8 +3,7 @@ package rapidapis
 import (
 	"fmt"
 	"log"
-	"net/http"
-	"time"
+	"weather-api/clients"
 	"weather-api/defaults"
 	"weather-api/utils"
 )
@@ -33,24 +32,16 @@ func DarkSkyC2(p Params) (*DarkSkyClient, error) {
 		log.Fatalf("❌ Parameter validation failed: %v", err)
 	}
 	url := utils.DarkSkyBuildBaseURL(p.Latitude, p.Longitude, date)
-	request, err := http.NewRequest(defaults.GET, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("eror when creating http GET request, error:%v", err)
-	}
-	request.Header.Add(defaults.RapidApiHeaderKey, p.Apikey)
-	request.Header.Add(defaults.RapidApiHeaderHost, defaults.DarkSkyApi)
 
-	var httpsClient = &http.Client{
-		Timeout: time.Second * 10,
-	}
-	response, err := httpsClient.Do(request)
+	response, err := clients.CreateClient(p.Apikey, defaults.GET, defaults.DarkSkyApi, url)
 	if err != nil {
-		return nil, fmt.Errorf("error when getting http GET response, error:%v", err)
+		return nil, fmt.Errorf("%v", err)
 	}
 	defer response.Body.Close()
+
 	data, err := utils.JsonDecoder(response.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error when decoding http.Request.Body to json")
+		return nil, fmt.Errorf("when decoding http.Response.Body to json")
 	}
 	return &DarkSkyClient{
 		data: data,

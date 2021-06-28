@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"strings"
-	"time"
+	"weather-api/clients"
 	"weather-api/defaults"
 	"weather-api/utils"
 )
@@ -184,25 +183,17 @@ func geoDBClient(p Params) (*GeoDBClient, error) {
 	}
 
 	url := utils.GeoDBBuildBaseURL(p.City)
-	request, err := http.NewRequest(defaults.GET, url, nil)
+
+	response, err := clients.CreateClient(p.Apikey, defaults.GET, defaults.GeoDBApi, url)
 	if err != nil {
-		return nil, fmt.Errorf("eror when creating http GET request, error:%v", err)
+		return nil, fmt.Errorf("%v", err)
 	}
-	request.Header.Add(defaults.RapidApiHeaderKey, p.Apikey)
-	request.Header.Add(defaults.RapidApiHeaderHost, defaults.GeoDBApi)
-	// add timeout
-	var httpsClient = &http.Client{
-		Timeout: time.Second * 10,
-	}
-	response, err := httpsClient.Do(request)
-	if err != nil {
-		return nil, fmt.Errorf("error when getting http GET response, error:%v", err)
-	}
-	defer response.Body.Close()
+
 	data, err := utils.JsonDecoder(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf("error when decoding http.Request.Body to json")
 	}
+
 	err = utils.ValidateRapidApiKey(data)
 	if err != nil {
 		log.Fatalf("❌ RapidApi error: %v", err)
@@ -244,28 +235,22 @@ func DarkSkyC(p Params) (*DarkSkyClient, error) {
 	if err != nil {
 		log.Fatalf("❌ Failed to get values from GeoDB Api %v", err)
 	}
+
 	date, _ := (&p).validateParams()
 
 	url := utils.DarkSkyBuildBaseURL(latitude, longitude, date)
-	request, err := http.NewRequest(defaults.GET, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("eror when creating http GET request, error:%v", err)
-	}
-	request.Header.Add(defaults.RapidApiHeaderKey, p.Apikey)
-	request.Header.Add(defaults.RapidApiHeaderHost, defaults.DarkSkyApi)
 
-	var httpsClient = &http.Client{
-		Timeout: time.Second * 10,
-	}
-	response, err := httpsClient.Do(request)
+	response, err := clients.CreateClient(p.Apikey, defaults.GET, defaults.DarkSkyApi, url)
 	if err != nil {
-		return nil, fmt.Errorf("error when getting http GET response, error:%v", err)
+		return nil, fmt.Errorf("%v", err)
 	}
 	defer response.Body.Close()
+
 	data, err := utils.JsonDecoder(response.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error when decoding http.Request.Body to json")
+		return nil, fmt.Errorf("when decoding http.Response.Body to json")
 	}
+
 	return &DarkSkyClient{
 		data:        data,
 		err:         err,
