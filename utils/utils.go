@@ -15,7 +15,7 @@ var (
 	checkY     = regexp.MustCompile(`\b(19[4-9][0-9]|20[0-4][0-9]|2050)\b`).MatchString
 	checkD     = regexp.MustCompile(`^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$`).MatchString
 	checkC     = regexp.MustCompile(`^\p{Lu}.*\D$`).MatchString
-	checkCoord = regexp.MustCompile(`^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$`).MatchString
+	checkCoord = regexp.MustCompile(`^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$`).MatchString
 )
 
 func ValidateRapidApiKey(data map[string]interface{}) error {

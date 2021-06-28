@@ -146,7 +146,9 @@ func TestValidateCoordinates(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-	{"good",args{latitude: }}
+		{"good", args{latitude: "53.349722222", longitude: "-6.260277777"}, false},
+		{"bad#1", args{latitude: "a3.349722222", longitude: "-6.260277777"}, true},
+		{"bad#2", args{latitude: "53.349722222", longitude: "-6.2a0277777"}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

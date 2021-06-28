@@ -67,9 +67,9 @@ func newCmdCoordinatesRun() *cobra.Command {
 	cmd.MarkFlagRequired("day")
 	cmd.Flags().StringVar(&params.Apikey, "apikey", "", "Please add valid Rapidapi key")
 	cmd.MarkFlagRequired("apikey")
-	cmd.Flags().StringVarP(&params.Latitude, "latitude", "lat", "", "Latitude coordnites for city")
+	cmd.Flags().StringVar(&params.Latitude, "latitude", "", "Latitude coordinates for city")
 	cmd.MarkFlagRequired("latitude")
-	cmd.Flags().StringVarP(&params.Latitude, "longitude", "lon", "", "Longitude coordnites for city")
+	cmd.Flags().StringVar(&params.Longitude, "longitude", "", "Longitude coordinates for city")
 	cmd.MarkFlagRequired("longitude")
 	return cmd
 }

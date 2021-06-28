@@ -9,8 +9,26 @@ import (
 	"weather-api/utils"
 )
 
+func (p *Params) validateParams2() (string, error) {
+	err := utils.ValidateCoordinates(p.Latitude, p.Longitude)
+	if err != nil {
+		return "", fmt.Errorf("%v", err)
+	}
+
+	err = utils.ValidateParamsApikey(p.Apikey)
+	if err != nil {
+		return "", fmt.Errorf("%v", err)
+	}
+
+	date, err := utils.BuildDate(p.Year, p.Month, p.Day)
+	if err != nil {
+		return "", fmt.Errorf("invalid date form %s,%v", date, err)
+	}
+	return date, nil
+}
+
 func DarkSkyC2(p Params) (*DarkSkyClient, error) {
-	date, err := (&p).validateParams()
+	date, err := (&p).validateParams2()
 	if err != nil {
 		log.Fatalf("❌ Parameter validation failed: %v", err)
 	}
@@ -49,7 +67,7 @@ func DarkSkyreturns2(p Params) error {
 	c.mapping.recieved = c.data
 	c.mapping.tempField, c.mapping.err = c.convertMap()
 	if c.mapping.err != nil {
-		log.Fatalf("❌ DarkSkyApi error: %v, please choose later date than %s", c.mapping.err, c.date)
+		log.Fatalf("❌ DarkSkyApi error: %v, please choose later date as %s or different location as %s, %s", c.mapping.err, c.date, p.Latitude, p.Longitude)
 	}
 	c.mapping.highTemp, c.mapping.err = c.getTempH()
 	if c.mapping.err != nil {
@@ -59,7 +77,7 @@ func DarkSkyreturns2(p Params) error {
 	if c.mapping.err != nil {
 		return fmt.Errorf("error occured with LowTemp,error:%v", c.mapping.err)
 	}
-	fmt.Printf("Highest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.highTemp, c.date, p.City, c.countryCode)
-	fmt.Printf("Lowest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.lowTemp, c.date, p.City, c.countryCode)
+	fmt.Printf("Highest daily temperature was %s Celcius in %s at latitude: %s, longitude %s\n", c.mapping.highTemp, c.date, p.Latitude, p.Longitude)
+	fmt.Printf("Lowest daily temperature was %s Celcius in %s at latitude: %s, longitude %s\n", c.mapping.lowTemp, c.date, p.Latitude, p.Longitude)
 	return nil
 }
