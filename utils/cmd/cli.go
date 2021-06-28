@@ -15,11 +15,11 @@ func newCmdDailyRun() *cobra.Command {
 		params = rapidapis.Params{Writer: os.Stdout}
 	)
 	cmd := &cobra.Command{
-		Use:   "daily",
-		Short: "daily",
+		Use:   "city",
+		Short: "Get daily lowest/highest temperature for specific date & city",
 		Long:  `Get daily lowest/highest temperature for specific date & city`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := rapidapis.DarkSkyreturns(params)
+			err := rapidapis.DsReturns(params)
 			if err != nil {
 				log.Fatalf("❌ Couldn't initliaze command line: %v", err)
 			}
@@ -47,10 +47,10 @@ func newCmdCoordinatesRun() *cobra.Command {
 	)
 	cmd := &cobra.Command{
 		Use:   "coordinates",
-		Short: "coordinates",
+		Short: "Get daily lowest/highest temperature for specific date & coordinates",
 		Long:  `Get daily lowest/highest temperature for specific date & coordinates`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := rapidapis.DarkSkyreturns2(params)
+			err := rapidapis.DsReturnsCo(params)
 			if err != nil {
 				log.Fatalf("❌ Couldn't initliaze command line: %v", err)
 			}
@@ -87,10 +87,10 @@ func NewDefaultWTMCommand() *cobra.Command {
 		
 		Examples:
 		# Long version
-		wtm daily --year 1972 --month 01 --day 12 --city "San Francisco" --apikey 23lk4jh234jkl23h5dsfh345
+		wtm city --year 1972 --month 01 --day 12 --city "San Francisco" --apikey 23lk4jh234jkl23h5dsfh345
 
 		#Shorthand version
-		wtm daily -y 1972 -m 01 -d 12 -c Dublin --apikey 23lk4jh234jkl23h5dsfh345
+		wtm city -y 1972 -m 01 -d 12 -c Dublin --apikey 23lk4jh234jkl23h5dsfh345
 		`,
 		SilenceErrors: true,
 		SilenceUsage:  true,
