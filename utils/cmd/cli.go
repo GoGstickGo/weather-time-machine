@@ -17,7 +17,8 @@ func newCmdDailyRun() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "city",
 		Short: "Get daily lowest/highest temperature for specific date & city",
-		Long:  `Get daily lowest/highest temperature for specific date & city`,
+		Long: `Get daily lowest/highest temperature for specific date & city. It optimized for
+		cities with highest population - capital cities. Temperatures values return in Celcius`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := rapidapis.DsReturns(params)
 			if err != nil {
@@ -48,7 +49,9 @@ func newCmdCoordinatesRun() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "coordinates",
 		Short: "Get daily lowest/highest temperature for specific date & coordinates",
-		Long:  `Get daily lowest/highest temperature for specific date & coordinates`,
+		Long: `Get daily lowest/highest temperature for specific date & coordinates.
+		Please add any longitude&latitude cordinates for an existing city.
+		Temperatures values return in Celcius`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := rapidapis.DsReturnsCo(params)
 			if err != nil {
