@@ -26,8 +26,8 @@ type CityForm struct {
 
 func NewRequest(c *models.CityService) *CityRequest {
 	return &CityRequest{
-		CityView:       views.NewView("bootstrap", "wtm/city"),
-		CityReturnView: views.NewView("bootstrap", "wtm/cityreturn"),
+		CityView:       views.NewView("bootstrap", "dynamic/city"),
+		CityReturnView: views.NewView("bootstrap", "dynamic/cityreturn"),
 		c:              c,
 	}
 }
