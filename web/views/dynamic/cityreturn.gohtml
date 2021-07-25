@@ -1,0 +1,17 @@
+{{define "yield"}}
+{{ template "returnTemp" .}}
+{{ end }}
+{{define "returnTemp"}}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Template</title>
+</head>
+<body>
+    <h1 class="city">City: {{.City}}</h1>
+    <h1>CountryCode: {{.CountryCode}}</h1>
+    <h1>Date: {{.Date}}</h1>
+    <h1>Highest daily temperature: {{.TempHigh}}</h1>
+    <h1>Lowest daily temperature: {{.TempLow}}</h1>
+</body>
+{{end}}
