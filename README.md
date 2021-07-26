@@ -20,7 +20,6 @@ Tool uses two APIs for retrieving coordinates for city and temperature for city.
 - <https://rapidapi.com/wirefreethought/api/geodb-cities/>
 - <https://rapidapi.com/user/darkskyapis>
 
-
 ## cli
 
 ### requirement
@@ -29,20 +28,17 @@ Tool uses two APIs for retrieving coordinates for city and temperature for city.
 
 ### usage
 
-    
     Use:   "wtm",
-		Short: "Weather time machine porvides temperature for specific date and city",
-		Long: `Weather time machine gets temperatures for specific date and city.
-		You must have valid Rapidapi APIkey, please see:  https://docs.rapidapi.com/docs/keys.
-		Cities with more than 1 name it must in quotations as --city "San Francisco".
-		
-		Examples:
-		# Long version
-		wtm city --year 1972 --month 01 --day 12 --city "San Francisco" --apikey 23lk4jh234jkl23h5dsfh345
+    Short: "Weather time machine provides temperature for specific date and city"
+    Long: `Weather time machine gets temperatures for specific date and city.
+    You must have valid Rapidapi APIkey, please see: <https://docs.rapidapi.com/docs/keys>.
+    Cities with more than 1 name it must in quotations as --city "San Francisco".
 
-		#Shorthand version
-		wtm city -y 1972 -m 01 -d 12 -c Dublin --apikey 23lk4jh234jkl23h5dsfh345
-    
+    Examples:
+    # Long version
+    wtm city --year 1972 --month 01 --day 12 --city "San Francisco" --apikey 23lk4jh234jkl23h5dsfh345
+    # Shorthand version
+    wtm city -y 1972 -m 01 -d 12 -c Dublin --apikey 23lk4jh234jkl23h5dsfh345
 
 ## web
 
