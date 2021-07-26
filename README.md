@@ -11,6 +11,8 @@
 
 Have you ever wondered when people say too hot / too cold for this time of the year. I don't believe in opinions, I believe in data. So I created this small tool to check temperature for specific city and date.
 
+Golang is so much fun!
+
 ## rapidApi
 
 Tool uses two APIs for retrieving coordinates for city and temperature for city. This API flow is not by design rather limitations of DarkSky API as it can only understand coordinates. First API call to get coordinates for given city then temperatures.
