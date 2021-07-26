@@ -19,13 +19,13 @@ Tool uses two APIs for retrieving coordinates for city and temperature for city.
 - <https://rapidapi.com/user/darkskyapis>
 
 
-## CLI
+## cli
 
-### Requirement
+### requirement
 
     valid rapidapi API key subscribed two APIs mentioned above
 
-### Functions
+### usage
 
     
     Use:   "wtm",
@@ -42,6 +42,6 @@ Tool uses two APIs for retrieving coordinates for city and temperature for city.
 		wtm city -y 1972 -m 01 -d 12 -c Dublin --apikey 23lk4jh234jkl23h5dsfh345
     
 
-## Web
+## web
 
-### Work In Progress
+### work in progress
