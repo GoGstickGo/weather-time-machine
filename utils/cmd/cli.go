@@ -18,7 +18,8 @@ func newCmdDailyRun() *cobra.Command {
 		Use:   "city",
 		Short: "Get daily lowest/highest temperature for specific date & city",
 		Long: `Get daily lowest/highest temperature for specific date & city. It optimized for
-		cities with highest population - capital cities. Temperatures values return in Celcius`,
+		cities with highest population - capital cities. Temperatures values return in Celcius
+		or Fahrenheit`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := rapidapis.DsReturns(params)
 			if err != nil {
@@ -39,6 +40,7 @@ func newCmdDailyRun() *cobra.Command {
 	cmd.MarkFlagRequired("apikey")
 	cmd.Flags().StringVarP(&params.City, "city", "c", "", "City with more than one name it must be in quotations")
 	cmd.MarkFlagRequired("city")
+	cmd.Flags().BoolVar(&params.Fahrenheit, "fahrenheit", false, "Please set this flag for show temperatures in fahrenheit")
 	return cmd
 }
 
@@ -51,7 +53,7 @@ func newCmdCoordinatesRun() *cobra.Command {
 		Short: "Get daily lowest/highest temperature for specific date & coordinates",
 		Long: `Get daily lowest/highest temperature for specific date & coordinates.
 		Please add any longitude&latitude cordinates for an existing city.
-		Temperatures values return in Celcius`,
+		Temperatures values return in Celcius or Fahrenheit`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := rapidapis.DsReturnsCo(params)
 			if err != nil {
@@ -74,6 +76,7 @@ func newCmdCoordinatesRun() *cobra.Command {
 	cmd.MarkFlagRequired("latitude")
 	cmd.Flags().StringVar(&params.Longitude, "longitude", "", "Longitude coordinates for city")
 	cmd.MarkFlagRequired("longitude")
+	cmd.Flags().BoolVar(&params.Fahrenheit, "fahrenheit", false, "Please set this flag for show temperatures in fahrenheit")
 	return cmd
 }
 

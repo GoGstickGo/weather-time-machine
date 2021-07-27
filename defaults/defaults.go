@@ -1,11 +1,12 @@
 package defaults
 
 const (
-	DarkSkyApi     = "dark-sky.p.rapidapi.com"
-	DarkSkyApiUrl  = "https://dark-sky.p.rapidapi.com/"
-	DarkSkyApiSort = "?units=ca&exclude=currently%2Chourly%2Calerts%2Cflags&lang=en"
-	DarkSkyMap     = "daily"
-	DarkSkyMapTemp = "temperature"
+	DarkSkyApi      = "dark-sky.p.rapidapi.com"
+	DarkSkyApiUrl   = "https://dark-sky.p.rapidapi.com/"
+	DarkSkyApiSortC = "?units=ca&exclude=currently%2Chourly%2Calerts%2Cflags&lang=en"
+	DarkSkyApiSortF = "?units=us&exclude=currently%2Chourly%2Calerts%2Cflags&lang=en"
+	DarkSkyMap      = "daily"
+	DarkSkyMapTemp  = "temperature"
 
 	GeoDBApi     = "wft-geo-db.p.rapidapi.com"
 	GeoDBUrl     = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities?limit=1&namePrefix="

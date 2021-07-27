@@ -68,8 +68,13 @@ func BuildDate(year, month, day string) (string, error) {
 	return date, nil
 }
 
-func DarkSkyBuildBaseURL(latitude, longitude, date string) string {
-	baseurl := defaults.DarkSkyApiUrl + latitude + "," + longitude + "," + date + "T" + "12:00:00" + defaults.DarkSkyApiSort
+func DarkSkyBuildBaseURLCelcius(latitude, longitude, date string) string {
+	baseurl := defaults.DarkSkyApiUrl + latitude + "," + longitude + "," + date + "T" + "12:00:00" + defaults.DarkSkyApiSortC
+	return baseurl
+}
+
+func DarkSkyBuildBaseURLFahrenheit(latitude, longitude, date string) string {
+	baseurl := defaults.DarkSkyApiUrl + latitude + "," + longitude + "," + date + "T" + "12:00:00" + defaults.DarkSkyApiSortF
 	return baseurl
 }
 

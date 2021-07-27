@@ -27,11 +27,19 @@ func (p *Params) validateParamsCo() (string, error) {
 }
 
 func dsClientCo(p Params) (*DarkSkyClient, error) {
+	var url string
+
 	date, err := (&p).validateParamsCo()
 	if err != nil {
 		log.Fatalf("❌ Parameter validation failed: %v", err)
 	}
-	url := utils.DarkSkyBuildBaseURL(p.Latitude, p.Longitude, date)
+
+	switch p.Fahrenheit {
+	case true:
+		url = utils.DarkSkyBuildBaseURLFahrenheit(p.Latitude, p.Longitude, date)
+	default:
+		url = utils.DarkSkyBuildBaseURLCelcius(p.Latitude, p.Longitude, date)
+	}
 
 	response, err := clients.CreateClient(p.Apikey, defaults.GET, defaults.DarkSkyApi, url)
 	if err != nil {
@@ -68,7 +76,14 @@ func DsReturnsCo(p Params) error {
 	if c.mapping.err != nil {
 		return fmt.Errorf("%v", c.mapping.err)
 	}
-	fmt.Printf("Highest daily temperature was %s Celcius in %s at latitude: %s, longitude %s\n", c.mapping.highTemp, c.date, p.Latitude, p.Longitude)
-	fmt.Printf("Lowest daily temperature was %s Celcius in %s at latitude: %s, longitude %s\n", c.mapping.lowTemp, c.date, p.Latitude, p.Longitude)
+
+	switch p.Fahrenheit {
+	case true:
+		fmt.Printf("Highest daily temperature was %s Fahrenheit in %s at latitude: %s, longitude %s\n", c.mapping.highTemp, c.date, p.Latitude, p.Longitude)
+		fmt.Printf("Lowest daily temperature was %s Fahrenheit in %s at latitude: %s, longitude %s\n", c.mapping.lowTemp, c.date, p.Latitude, p.Longitude)
+	default:
+		fmt.Printf("Highest daily temperature was %s Celcius in %s at latitude: %s, longitude %s\n", c.mapping.highTemp, c.date, p.Latitude, p.Longitude)
+		fmt.Printf("Lowest daily temperature was %s Celcius in %s at latitude: %s, longitude %s\n", c.mapping.lowTemp, c.date, p.Latitude, p.Longitude)
+	}
 	return nil
 }

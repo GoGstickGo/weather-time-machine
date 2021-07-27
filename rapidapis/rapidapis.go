@@ -8,14 +8,15 @@ import (
 )
 
 type Params struct {
-	Day       string
-	Month     string
-	Year      string
-	Apikey    string
-	City      string
-	Latitude  string
-	Longitude string
-	Writer    io.Writer
+	Day        string
+	Month      string
+	Year       string
+	Apikey     string
+	City       string
+	Latitude   string
+	Longitude  string
+	Fahrenheit bool
+	Writer     io.Writer
 }
 
 type Mapping struct {
