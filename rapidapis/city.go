@@ -81,6 +81,8 @@ func gdReturns(p Params) (string, string, string, error) {
 }
 
 func dsClient(p Params) (*DarkSkyClient, error) {
+	var url string
+
 	countryCode, latitude, longitude, err := gdReturns(p)
 	if err != nil {
 		log.Fatalf("❌ Failed to get values from GeoDB Api %v", err)
@@ -88,7 +90,12 @@ func dsClient(p Params) (*DarkSkyClient, error) {
 
 	date, _ := (&p).validateParams()
 
-	url := utils.DarkSkyBuildBaseURL(latitude, longitude, date)
+	switch p.Fahrenheit {
+	case true:
+		url = utils.DarkSkyBuildBaseURLFahrenheit(latitude, longitude, date)
+	default:
+		url = utils.DarkSkyBuildBaseURLCelcius(latitude, longitude, date)
+	}
 
 	response, err := clients.CreateClient(p.Apikey, defaults.GET, defaults.DarkSkyApi, url)
 	if err != nil {
@@ -127,7 +134,13 @@ func DsReturns(p Params) error {
 	if c.mapping.err != nil {
 		return fmt.Errorf("%v", c.mapping.err)
 	}
-	fmt.Printf("Highest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.highTemp, c.date, p.City, c.countryCode)
-	fmt.Printf("Lowest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.lowTemp, c.date, p.City, c.countryCode)
+	switch p.Fahrenheit {
+	case true:
+		fmt.Printf("Highest daily temperature was %s Fahrenheit in %s in %s, %s\n", c.mapping.highTemp, c.date, p.City, c.countryCode)
+		fmt.Printf("Lowest daily temperature was %s Fahrenheit in %s in %s, %s\n", c.mapping.lowTemp, c.date, p.City, c.countryCode)
+	default:
+		fmt.Printf("Highest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.highTemp, c.date, p.City, c.countryCode)
+		fmt.Printf("Lowest daily temperature was %s Celcius in %s in %s, %s\n", c.mapping.lowTemp, c.date, p.City, c.countryCode)
+	}
 	return nil
 }

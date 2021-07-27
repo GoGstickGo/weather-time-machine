@@ -80,6 +80,8 @@ func gdReturnsWeb(p Params) (string, string, string, error) {
 }
 
 func dsClientWeb(p Params) (*DarkSkyClient, error) {
+	var url string
+
 	countryCode, latitude, longitude, err := gdReturnsWeb(p)
 	if err != nil {
 		return nil, fmt.Errorf("%v", err)
@@ -87,7 +89,12 @@ func dsClientWeb(p Params) (*DarkSkyClient, error) {
 
 	date, _ := (&p).validateParams()
 
-	url := utils.DarkSkyBuildBaseURL(latitude, longitude, date)
+	switch p.Fahrenheit {
+	case true:
+		url = utils.DarkSkyBuildBaseURLFahrenheit(latitude, longitude, date)
+	default:
+		url = utils.DarkSkyBuildBaseURLCelcius(latitude, longitude, date)
+	}
 
 	response, err := clients.CreateClient(p.Apikey, defaults.GET, defaults.DarkSkyApi, url)
 	if err != nil {
