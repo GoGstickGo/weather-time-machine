@@ -11,7 +11,12 @@
     <h1 class="city">City: {{.City}}</h1>
     <h1>CountryCode: {{.CountryCode}}</h1>
     <h1>Date: {{.Date}}</h1>
-    <h1>Highest daily temperature: {{.TempHigh}}</h1>
-    <h1>Lowest daily temperature: {{.TempLow}}</h1>
+    {{ if .Fahrenheit}}
+        <h1>Highest daily temperature: {{.TempHigh}} Fahrenheit</h1>
+        <h1>Lowest daily temperature: {{.TempLow}} Fahrenheit</h1>
+    {{ else }}
+        <h1>Highest daily temperature: {{.TempHigh}} Celsius</h1>
+        <h1>Lowest daily temperature: {{.TempLow}} Celsius</h1>
+    {{ end }}
 </body>
 {{end}}
