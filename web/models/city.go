@@ -24,6 +24,7 @@ type Cities struct {
 	CountryCode string
 	TempLow     string
 	TempHigh    string
+	Fahrenheit  bool
 }
 
 type CityService struct {
@@ -76,9 +77,9 @@ func (c *CityService) Create(city *Cities) error {
 	return c.db.Create(city).Error
 }
 
-func (c *CityService) FreeCity(date, city string) (*Cities, error) {
+func (c *CityService) FreeCity(date, city string, fahrenheit bool) (*Cities, error) {
 	var freecity Cities
-	fc := c.db.Where("city = ? AND date = ?", city, date)
+	fc := c.db.Where("city = ? AND date = ? AND fahrenheit = ?", city, date, fahrenheit)
 	err := firstCity(fc, &freecity)
 	if err != nil {
 		return nil, err

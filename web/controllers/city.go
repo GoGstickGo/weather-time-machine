@@ -18,10 +18,11 @@ type CityRequest struct {
 }
 
 type CityForm struct {
-	Name  string `schema:"name"`
-	Day   string `schema:"day"`
-	Month string `schema:"month"`
-	Year  string `schema:"year"`
+	Name       string `schema:"name"`
+	Day        string `schema:"day"`
+	Month      string `schema:"month"`
+	Year       string `schema:"year"`
+	Fahrenheit bool   `schema:"fahrenheit"`
 }
 
 func NewRequest(c *models.CityService) *CityRequest {
@@ -57,7 +58,7 @@ func (c *CityRequest) GetTemps(w http.ResponseWriter, r *http.Request) {
 			Message: fmt.Sprintf("%v", err),
 		}
 	}
-	freeCities, _ := c.c.FreeCity(date, form.Name)
+	freeCities, _ := c.c.FreeCity(date, form.Name, form.Fahrenheit)
 	if err != nil {
 		log.Println(err)
 		vd.Alert = &views.Alert{
@@ -69,12 +70,13 @@ func (c *CityRequest) GetTemps(w http.ResponseWriter, r *http.Request) {
 		log.Println("free", freeCities)
 		c.CityReturnView.Render(w, freeCities)
 	} else {
-		tempH, tempL, date, city, cc, err := rapidapis.DsReturnsWeb(rapidapis.Params{
-			City:   form.Name,
-			Day:    form.Day,
-			Month:  form.Month,
-			Year:   form.Year,
-			Apikey: os.Getenv("RAPIDAPI_KEY"),
+		tempH, tempL, date, city, cc, f, err := rapidapis.DsReturnsWeb(rapidapis.Params{
+			City:       form.Name,
+			Day:        form.Day,
+			Month:      form.Month,
+			Year:       form.Year,
+			Fahrenheit: form.Fahrenheit,
+			Apikey:     os.Getenv("RAPIDAPI_KEY"),
 		})
 		if err != nil {
 			log.Println(err)
@@ -85,13 +87,13 @@ func (c *CityRequest) GetTemps(w http.ResponseWriter, r *http.Request) {
 			c.CityView.Render(w, vd)
 			return
 		}
-
 		cities := models.Cities{
 			City:        city,
 			Date:        date,
 			CountryCode: cc,
 			TempHigh:    tempH,
 			TempLow:     tempL,
+			Fahrenheit:  f,
 		}
 
 		if err := c.c.Create(&cities); err != nil {
@@ -100,7 +102,6 @@ func (c *CityRequest) GetTemps(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Print("not free")
 		c.CityReturnView.Render(w, cities)
-
 	}
 
 }

@@ -115,23 +115,23 @@ func dsClientWeb(p Params) (*DarkSkyClient, error) {
 	}, nil
 }
 
-func DsReturnsWeb(p Params) (tempH, tempL, date, name, cc string, e error) {
+func DsReturnsWeb(p Params) (tempH, tempL, date, name, cc string, f bool, e error) {
 	c, err := dsClientWeb(p)
 	if err != nil {
-		return "", "", "", "", "", fmt.Errorf("%v", err)
+		return "", "", "", "", "", false, fmt.Errorf("%v", err)
 	}
 	c.mapping.recieved = c.data
 	c.mapping.tempField, c.mapping.err = c.convertMap()
 	if c.mapping.err != nil {
-		return "", "", "", "", "", fmt.Errorf("%v, please choose later date than %s", c.mapping.err, c.date)
+		return "", "", "", "", "", false, fmt.Errorf("%v, please choose later date than %s", c.mapping.err, c.date)
 	}
 	c.mapping.highTemp, c.mapping.err = c.getTempH()
 	if c.mapping.err != nil {
-		return "", "", "", "", "", fmt.Errorf("%v", c.mapping.err)
+		return "", "", "", "", "", false, fmt.Errorf("%v", c.mapping.err)
 	}
 	c.mapping.lowTemp, c.mapping.err = c.getTempL()
 	if c.mapping.err != nil {
-		return "", "", "", "", "", fmt.Errorf("%v", c.mapping.err)
+		return "", "", "", "", "", false, fmt.Errorf("%v", c.mapping.err)
 	}
-	return c.mapping.highTemp, c.mapping.lowTemp, c.date, p.City, c.countryCode, nil
+	return c.mapping.highTemp, c.mapping.lowTemp, c.date, p.City, c.countryCode, p.Fahrenheit, nil
 }
