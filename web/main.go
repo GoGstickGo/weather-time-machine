@@ -43,12 +43,11 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", staticC.Home.ServeHTTP).Methods("GET")
-	r.HandleFunc("/contact", staticC.Contact.ServeHTTP).Methods("GET")
-	r.HandleFunc("/history", staticC.History.ServeHTTP).Methods("GET")
 	r.HandleFunc("/city", cityC.New).Methods("GET")
 	r.HandleFunc("/city", cityC.GetTemps).Methods("POST")
 	r.HandleFunc("/coordinates", coordinatesC.New).Methods("GET")
 	r.HandleFunc("/coordinates", coordinatesC.GetTempsCo).Methods("POST")
+	r.HandleFunc("/contact", staticC.Contact.ServeHTTP).Methods("GET")
 	http.ListenAndServe(":3000", r)
 
 }
