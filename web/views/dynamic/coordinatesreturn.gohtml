@@ -1,0 +1,22 @@
+{{define "yield"}}
+{{ template "returnTemp" .}}
+{{ end }}
+{{define "returnTemp"}}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Template</title>
+</head>
+<body>
+    <h1 class="latitude">Latitude: {{.Latitude}}</h1>
+    <h1 class="longitude">Longitude: {{.Longitude}}</h1>
+    <h1 class="date">Date: {{.Date}}</h1>
+    {{ if .Fahrenheit}}
+        <h1>Highest daily temperature: {{.TempHigh}} Fahrenheit</h1>
+        <h1>Lowest daily temperature: {{.TempLow}} Fahrenheit</h1>
+    {{ else }}
+        <h1>Highest daily temperature: {{.TempHigh}} Celsius</h1>
+        <h1>Lowest daily temperature: {{.TempLow}} Celsius</h1>
+    {{ end }}
+</body>
+{{end}}
