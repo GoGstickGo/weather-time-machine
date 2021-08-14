@@ -13,7 +13,7 @@
 </div>
 {{end}}
 {{define "getTemp"}}
-<form action="/city"method="POST">
+<form action="/cityreturn"method="POST">
     <div class="form-group">
         <label for="name">City</label>
         <input type="name"name="name"class="form-control"id="name"placeholder="Name">
@@ -35,5 +35,6 @@
             <input type="checkbox"name="fahrenheit"class="form-control"id="fahrenheit">
     </div>
     <button type="submit"class="btn btn-primary">Get temps</button>
+    <button type="reset"class="btn btn-primary">Reset</button>
 </form>
 {{end}}
