@@ -28,19 +28,18 @@ th, td {
         </table>
         <table>
             <tr>
-                <th style="background-color: #337ab7;"></th> 
-                <th style="background-color: #337ab7;"></th> 
+                <th colspan="2" style="background-color: #337ab7;">Results</th>
             </tr>
             <tr>
-                <td style="background-color: #fff;"> {{ if .Fahrenheit}}
-                                                        <h3>Highest daily temperature: {{.TempHigh}} Fahrenheit</h3>
-                                                    {{ else }}
-                                                        <h3>Highest daily temperature: {{.TempHigh}} Celsius</h3>
-                                                    {{ end }} </td>
                 <td style="background-color: #fff;"> {{ if .Fahrenheit}}
                                                         <h3>Lowest daily temperature: {{.TempLow}} Fahrenheit</h3>
                                                     {{ else }}
                                                         <h3>Lowest daily temperature: {{.TempLow}} Celsius</h3>
+                                                    {{ end }} </td>
+                <td style="background-color: #fff;"> {{ if .Fahrenheit}}
+                                                        <h3>Highest daily temperature: {{.TempHigh}} Fahrenheit</h3>
+                                                    {{ else }}
+                                                        <h3>Highest daily temperature: {{.TempHigh}} Celsius</h3>
                                                     {{ end }} </td>
             </tr>
             </table>
