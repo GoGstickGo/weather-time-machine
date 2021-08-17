@@ -3,20 +3,47 @@
 {{ end }}
 {{define "returnTemp"}}
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Go Template</title>
+<style>
+table, th, td {
+    border: 5px solid black;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+th, td {
+    padding: 5px;
+    text-align: left;    
+}
+</style>
 </head>
 <body>
-    <h1 class="latitude">Latitude: {{.Latitude}}</h1>
-    <h1 class="longitude">Longitude: {{.Longitude}}</h1>
-    <h1 class="date">Date: {{.Date}}</h1>
-    {{ if .Fahrenheit}}
-        <h1>Highest daily temperature: {{.TempHigh}} Fahrenheit</h1>
-        <h1>Lowest daily temperature: {{.TempLow}} Fahrenheit</h1>
-    {{ else }}
-        <h1>Highest daily temperature: {{.TempHigh}} Celsius</h1>
-        <h1>Lowest daily temperature: {{.TempLow}} Celsius</h1>
-    {{ end }}
+    <table>
+        <tr>
+            <th colspan="3" style="background-color: #337ab7;">Search details</th>
+        </tr>
+        <tr>
+            <td style="background-color: #fff;"><h4>Latitude: {{.Latitude}}</h4></td>
+            <td style="background-color: #fff;"><h4>Longitude: {{.Longitude}}</h4></td>
+            <td style="background-color: #fff;"><h4>Date: {{.Date}} </h4></td>
+        </tr>
+        </table>
+        <table>
+            <tr>
+                <th colspan="2" style="background-color: #337ab7;">Results</th>
+            </tr>
+            <tr>
+                <td style="background-color: #fff;"> {{ if .Fahrenheit}}
+                                                        <h3>Lowest daily temperature: {{.TempLow}} Fahrenheit</h3>
+                                                    {{ else }}
+                                                        <h3>Lowest daily temperature: {{.TempLow}} Celsius</h3>
+                                                    {{ end }} </td>
+                <td style="background-color: #fff;"> {{ if .Fahrenheit}}
+                                                        <h3>Highest daily temperature: {{.TempHigh}} Fahrenheit</h3>
+                                                    {{ else }}
+                                                        <h3>Highest daily temperature: {{.TempHigh}} Celsius</h3>
+                                                    {{ end }} </td>
+            </tr>
+            </table>
+    <br>
+    <a class="btn btn-primary" href='http://localhost:3000/cordinates' role="button">New Search</a>
 </body>
 {{end}}
