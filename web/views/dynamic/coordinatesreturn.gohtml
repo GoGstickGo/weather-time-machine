@@ -2,37 +2,49 @@
 {{ template "returnTemp" .}}
 {{ end }}
 {{define "returnTemp"}}
-<body>
+<head>
+<style>
+table, th, td {
+    border: 5px solid black;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+th, td {
+    padding: 5px;
+    text-align: left;    
+}
 </style>
-    <div class="card text-dark bg-light mb-3" id="card-1" style="max-width: 45rem;">
-        <div class="card-header" style="background-color: #337ab7;">Search details</div>
-            <div class="card-body" style="background-color: #fff;">
-                <p class="card-text">Latitude: {{.Latitude}}</p>
-                <p class="card-text">Longitude: {{.Longitude}}</p>
-                <p class="card-text">Date: {{.Date}}</p>
-            </div>
-        </div>
-        <div class="card text-dark bg-light mb-3" id="card-2" style="max-width: 45rem;">
-            <div class="card-header" style="background-color: #337ab7;">Highest daily temperature</div>
-                <div class="card-body" style="background-color: #fff;">
-                    {{ if .Fahrenheit}}
-                        <h1 class="card-text">{{.TempHigh}} Fahrenheit</h1>
-                    {{ else }}
-                        <h1 class="card-text">{{.TempHigh}} Celcius</h1>
-                    {{ end }}
-                </div>
-            </div>
-        <div class="card text-dark bg-light mb-3" id="card-3" style="max-width: 45rem;">
-            <div class="card-header" style="background-color: #337ab7;">Lowest daily temperature</div>
-                <div class="card-body" style="background-color: #fff;">
-                    {{ if .Fahrenheit}}
-                        <h1 class="card-text">{{.TempLow}} Fahrenheit</h1>
-                    {{ else }}
-                        <h1 class="card-text">{{.TempLow}} Celcius</h1>
-                    {{ end }}
-                </div>
-            </div>
+</head>
+<body>
+    <table>
+        <tr>
+            <th colspan="3" style="background-color: #337ab7;">Search details</th>
+        </tr>
+        <tr>
+            <td style="background-color: #fff;"><h4>Latitude: {{.Latitude}}</h4></td>
+            <td style="background-color: #fff;"><h4>Longitude: {{.Longitude}}</h4></td>
+            <td style="background-color: #fff;"><h4>Date: {{.Date}} </h4></td>
+        </tr>
+        </table>
+        <table>
+            <tr>
+                <th style="background-color: #337ab7;"></th> 
+                <th style="background-color: #337ab7;"></th> 
+            </tr>
+            <tr>
+                <td style="background-color: #fff;"> {{ if .Fahrenheit}}
+                                                        <h3>Highest daily temperature: {{.TempHigh}} Fahrenheit</h3>
+                                                    {{ else }}
+                                                        <h3>Highest daily temperature: {{.TempHigh}} Celsius</h3>
+                                                    {{ end }} </td>
+                <td style="background-color: #fff;"> {{ if .Fahrenheit}}
+                                                        <h3>Lowest daily temperature: {{.TempLow}} Fahrenheit</h3>
+                                                    {{ else }}
+                                                        <h3>Lowest daily temperature: {{.TempLow}} Celsius</h3>
+                                                    {{ end }} </td>
+            </tr>
+            </table>
     <br>
-    <a class="btn btn-primary" href='http://localhost:3000/coordinates' role="button">New Search</a>
+    <a class="btn btn-primary" href='http://localhost:3000/cordinates' role="button">New Search</a>
 </body>
 {{end}}
