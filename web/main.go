@@ -3,26 +3,25 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 	"weather-api/web/controllers"
 	"weather-api/web/models"
 
 	"github.com/gorilla/mux"
 )
 
-const (
-	host = "localhost"
-	port = 5432
-	user = "postgres"
-	//password = "1234"
-	dbname = "wtm"
+var (
+	host     = os.Getenv("DATABASE_URL")
+	port, _  = strconv.Atoi(os.Getenv("DATABASE_PORT"))
+	user     = os.Getenv("DATABASE_USER")
+	password = os.Getenv("DATABASE_PASSWORD")
+	dbname   = os.Getenv("DATABASE_NAME")
 )
 
 func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"dbname=%s sslmode=disable", host, port, user, dbname)
-	/*psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-	"*password=%s dbname=%s sslmode=disable", host, port, user password,, dbname)*/
-
+		"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	staticC := controllers.NewStatic()
 
 	c, err := models.NewCityService(psqlInfo)

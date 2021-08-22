@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+
+  wtmweb:
+    image: wtmweb:0.1.8
+    ports:
+      - "3000:3000"
+    depends_on:
+    - wtmdb
+    environment:
+      DATABASE_USER: "${DATABASE_USER}"
+      DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
+      DATABASE_NAME: "${DATABASE_NAME}"
+      DATABASE_URL: "${DATABASE_URL}"
+      DATABASE_PORT: "${DATABASE_PORT}"
+      RAPIDAPI_KEY: "${RAPIDAPI_KEY}"
+      WAIT_HOSTS: wtmdb:5432
+      WAIT_BEFORE: 5
+      WAIT_AFTER: 5
+
+  wtmdb:
+    image: postgres:12.7-alpine
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    ports: 
+      - "5432:5432"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+      - db_data:/home/postgres/data
+    environment:
+      PGDATA: "/home/postgres/data"
+      POSTGRES_PASSWORD: "${MAIN_DATABASE_PASSWORD}"
+      POSTGRES_USER: "${MAIN_DATABASE_USER}"
+      APP_DB_USER: "${DATABASE_USER}"
+      APP_DB_PASS: "${DATABASE_PASSWORD}"
+      APP_DB_NAME: "${DATABASE_NAME}"
+
+volumes:
+  db_data:
+    external: true
