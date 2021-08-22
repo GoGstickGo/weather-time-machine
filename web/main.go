@@ -10,11 +10,11 @@ import (
 )
 
 const (
-	host = "localhost"
-	port = 5432
-	user = "postgres"
-	//password = "1234"
-	dbname = "wtm"
+	host =  os.Getenv("DATABASE_URL")
+	port =  os.Getenv("DATABASE_PORT")
+	user =  os.Getenv("DATABASE_USER")
+	password = os.Getenv("DATABASE_PASSWORD")
+	dbname = os.Getenv("DATABASE_NAME")
 )
 
 func main() {
