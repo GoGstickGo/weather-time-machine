@@ -26,5 +26,6 @@ require (
 	github.com/jackc/pgx/v4 v4.11.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/rs/cors v1.8.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 )

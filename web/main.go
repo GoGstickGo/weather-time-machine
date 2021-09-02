@@ -9,6 +9,7 @@ import (
 	"weather-api/web/models"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 var (
@@ -41,12 +42,21 @@ func main() {
 	coordinatesC := controllers.NewRequestCo(co)
 
 	r := mux.NewRouter()
+	r.Use(commonMiddleware)
 	r.HandleFunc("/", staticC.Home.ServeHTTP).Methods("GET")
 	r.HandleFunc("/city", cityC.New).Methods("GET")
 	r.HandleFunc("/cityreturn", cityC.GetTemps).Methods("POST")
 	r.HandleFunc("/coordinates", coordinatesC.New).Methods("GET")
 	r.HandleFunc("/coordinatesreturn", coordinatesC.GetTempsCo).Methods("POST")
 	r.HandleFunc("/contact", staticC.Contact.ServeHTTP).Methods("GET")
-	http.ListenAndServe(":3000", r)
+	handler := cors.Default().Handler(r)
+	http.ListenAndServe(":3000", handler)
 
+}
+
+func commonMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "text/html, charset=UTF-8")
+		next.ServeHTTP(w, r)
+	})
 }
