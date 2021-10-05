@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -32,7 +31,7 @@ type CityService struct {
 }
 
 var newLogger logger.Interface = logger.New(
-	log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+	log.New(file, "\r\n", log.LstdFlags), // io writer
 	logger.Config{
 		SlowThreshold:             time.Second,  // Slow SQL threshold
 		LogLevel:                  logger.Error, // Log level
