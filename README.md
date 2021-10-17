@@ -42,4 +42,4 @@ Tool uses two APIs for retrieving coordinates for city and temperature for city.
 
 ## web
 
-### work in progress
+[weathertimemachine.xyz](https://weathertimemachine.xyz)
