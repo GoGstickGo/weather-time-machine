@@ -10,11 +10,11 @@ ENV RAPIDAPI_KEY="${RAPIDAPI_KEY}"
 WORKDIR /app
 
 ## Add the wait script to the image
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
-RUN chmod +x /wait
+#ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+#RUN chmod +x /wait
 
 ADD wtmWeb .
 
 COPY views/ /app/views/
 
-CMD /wait && /app/wtmWeb
+CMD /app/wtmWeb
